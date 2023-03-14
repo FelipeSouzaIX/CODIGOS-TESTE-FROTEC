@@ -1,0 +1,121 @@
+import 'package:flutter/material.dart';
+
+class TelaPrincipal extends StatefulWidget {
+  @override
+  _TelaPrincipalState createState() => _TelaPrincipalState();
+}
+
+class _TelaPrincipalState extends State<TelaPrincipal> {
+  TextEditingController _kmInicialController = TextEditingController();
+  TextEditingController _kmFinalController = TextEditingController();
+  TextEditingController _kmTrocaOleoController = TextEditingController();
+  double _kmRodados = 0;
+  double _kmTrocaOleo = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Meu Veículo"),
+        centerTitle: true,
+        leading: CircleAvatar(
+          backgroundImage: AssetImage("assets/user_photo.png"),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Digite os km inicial e final do seu veículo:",
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _kmInicialController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: "Km inicial",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: TextField(
+                    controller: _kmFinalController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: "Km final",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  double kmInicial = double.parse(_kmInicialController.text);
+                  double kmFinal = double.parse(_kmFinalController.text);
+                  _kmRodados = kmFinal - kmInicial;
+                });
+              },
+              child: Text("Calcular km rodados"),
+            ),
+            SizedBox(height: 30),
+            Text(
+              "Digite a cada quantos km deve ser feita a troca de óleo:",
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: _kmTrocaOleoController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "Km para troca de óleo",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _kmTrocaOleo = double.parse(_kmTrocaOleoController.text);
+                  double kmAtual = double.parse(_kmFinalController.text);
+                  if (kmAtual % _kmTrocaOleo == 0) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Troca de óleo necessária!"),
+                          content: Text(
+                            "Seu veículo já rodou $_kmRodados km desde a última troca de óleo, é hora de fazer a manutenção.",
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("OK"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                });
+              },
+              child: Text("Verificar troca de óleo"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
